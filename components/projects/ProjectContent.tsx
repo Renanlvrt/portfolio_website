@@ -1,14 +1,21 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Github, ExternalLink, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Github,
+  ExternalLink,
+  CheckCircle2,
+  Bot,
+  Code,
+  BookOpen,
+  Cpu,
+} from "lucide-react";
 import { type Project } from "@/lib/projects";
 import { formatDateRange } from "@/lib/utils";
-import { Robot, Code, BookOpen, Cpu } from "lucide-react";
 
 const categoryIcons = {
-  robotics: Robot,
+  robotics: Bot,
   web: Code,
   research: BookOpen,
   "low-level": Cpu,
@@ -32,11 +39,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
     <div className="pt-24 pb-20 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <Link
             href="/projects"
             className="inline-flex items-center text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors mb-8"
@@ -44,15 +47,10 @@ export default function ProjectContent({ project }: ProjectContentProps) {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Projects
           </Link>
-        </motion.div>
+        </div>
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
               <Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
@@ -96,51 +94,60 @@ export default function ProjectContent({ project }: ProjectContentProps) {
               </a>
             )}
           </div>
-        </motion.div>
+        </div>
+
+        {/* Cinematic media area */}
+        {project.video && (
+          <div className="relative mb-12 overflow-hidden rounded-3xl border border-slate-200/40 dark:border-slate-800 shadow-[0_20px_80px_rgba(15,23,42,0.35)]">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster={project.image}
+              className="absolute inset-0 h-full w-full object-cover blur-[1.5px] brightness-75"
+            >
+              <source src={project.video} type="video/quicktime" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-slate-900/70 to-slate-900/50" />
+            <div className="relative z-10 px-8 py-10 lg:px-12 lg:py-14 space-y-6 text-slate-100">
+              <p className="text-lg md:text-xl text-slate-200 max-w-3xl">{project.description}</p>
+              <div className="flex flex-wrap gap-4 text-sm text-slate-200/80">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{formatDateRange(project.startDate, project.endDate)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{project.duration}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Description */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="prose prose-lg dark:prose-invert max-w-none mb-12"
-        >
-          <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
-            {project.fullDescription}
-          </p>
-        </motion.div>
+        <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
+          <p className="text-xl text-slate-600 dark:text-slate-400 leading-relaxed">{project.fullDescription}</p>
+        </div>
 
         {/* Highlights */}
         {project.highlights && project.highlights.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
             {project.highlights.map((highlight, index) => (
               <div
                 key={index}
                 className="bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 rounded-xl p-6 border border-primary-200 dark:border-primary-800"
               >
-                <div className="text-3xl font-bold font-display gradient-text mb-1">
-                  {highlight.value}
-                </div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  {highlight.title}
-                </div>
+                <div className="text-3xl font-bold font-display gradient-text mb-1">{highlight.value}</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">{highlight.title}</div>
               </div>
             ))}
-          </motion.div>
+          </div>
         )}
 
         {/* Technologies */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mb-12"
-        >
+        <div className="mb-12">
           <h2 className="text-2xl font-semibold mb-4">Technologies Used</h2>
           <div className="flex flex-wrap gap-3">
             {project.technologies.map((tech) => (
@@ -152,16 +159,11 @@ export default function ProjectContent({ project }: ProjectContentProps) {
               </span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Features */}
         {project.features && project.features.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
             <ul className="space-y-3">
               {project.features.map((feature, index) => (
@@ -171,17 +173,12 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         )}
 
         {/* Achievements */}
         {project.achievements && project.achievements.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Achievements</h2>
             <ul className="space-y-3">
               {project.achievements.map((achievement, index) => (
@@ -191,17 +188,12 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         )}
 
         {/* Project-Specific Content */}
         {project.id === "robotics" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Technical Deep Dive</h2>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 space-y-4">
               <div>
@@ -221,16 +213,11 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {project.id === "track-field" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Technical Implementation</h2>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 space-y-4">
               <div>
@@ -249,16 +236,11 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {project.id === "discrete-math" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Research Methodology</h2>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 space-y-4">
               <div>
@@ -278,16 +260,11 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {project.id === "lmc-assembly" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="mb-12"
-          >
+          <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Memory Management</h2>
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 space-y-4">
               <div>
@@ -306,7 +283,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

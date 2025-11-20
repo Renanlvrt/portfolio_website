@@ -4,3 +4,7 @@ CV PDF file
 Team photos (heart project, track & field)
 
 I also want you to add a section of hobbies (passion)-> including photography...
+
+
+the robotic page is still using react, I want you to layout the same way as the other project pages do. No more react in the website ever.
+Then I want you to include the videos in the main page of project (The one displaying all the projects), I want you to have the videos running in loops and have the same as the profile picture in a blury and darker way. I don't want you to put a huge picture in the background, I want you to format it so that it does not take too much space, and I want you to put elements over the video because it is not supposed to be just the video, act as if it was a background but it is a video instead

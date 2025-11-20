@@ -39,17 +39,9 @@ const categoryIcons = {
 
 const fallbackImage = "/images/photography.jpg";
 
-const projectMediaFallback = {
-  alt: "Project artwork",
-  caption: "Meticulous case study crafted with static rendering.",
-  overlay: "bg-white/5",
-};
-
 const projectMedia = (project: Project) => ({
   image: project.image ?? fallbackImage,
   alt: `${project.title} showcase`,
-  caption: project.description,
-  overlay: projectMediaFallback.overlay,
 });
 
 const photographyGallery = [
@@ -234,27 +226,26 @@ export default function ProjectsPage() {
                               className="h-full w-full object-cover"
                             />
                           )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
-                          <div className="absolute bottom-4 left-4 right-4 text-sm text-slate-200">
-                            {media.caption}
+                          <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]" />
+                          <div className="relative z-10 flex h-full flex-col justify-between p-5 text-slate-100">
+                            <div className="flex items-center justify-between text-xs uppercase tracking-[0.2em] text-slate-300">
+                              <span>{categoryMeta[project.category].title}</span>
+                              <span className="px-3 py-1 rounded-full bg-white/10 text-[0.6rem] tracking-[0.25em]">
+                                {project.duration}
+                              </span>
+                            </div>
+                            <div>
+                              <h3 className="text-2xl font-semibold">{project.title}</h3>
+                              <p className="text-sm text-slate-200/90 line-clamp-2 mt-1">{project.description}</p>
+                            </div>
+                            <div className="flex items-center justify-between text-[0.65rem] uppercase tracking-[0.3em] text-slate-300">
+                              <span>{formatDateRange(project.startDate, project.endDate)}</span>
+                              <span>{project.technologies[0]}</span>
+                            </div>
                           </div>
                         </div>
 
                         <div className="p-6 space-y-4">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-                                {formatDateRange(project.startDate, project.endDate)}
-                              </p>
-                              <h3 className="text-2xl font-semibold text-white mt-2">{project.title}</h3>
-                            </div>
-                            <span className="text-xs font-medium px-3 py-1 rounded-full bg-white/10 text-slate-200">
-                              {project.duration}
-                            </span>
-                          </div>
-
-                          <p className="text-sm text-slate-300">{project.description}</p>
-
                           <div className="flex flex-wrap gap-2 text-xs text-slate-400">
                             {project.technologies.map((tech) => (
                               <span key={tech} className="px-3 py-1 rounded-full border border-white/10">
@@ -280,8 +271,6 @@ export default function ProjectsPage() {
                             <span className="text-slate-400">{project.achievements.length}+ highlights</span>
                           </div>
                         </div>
-
-                        <div className={`absolute inset-0 pointer-events-none ${projectMediaFallback.overlay}`} />
                       </article>
                     );
                   })}
