@@ -34,6 +34,8 @@ export const projects: Project[] = [
     startDate: "2025-07-01",
     endDate: "2025-09-30",
     duration: "3 months",
+    image: "/images/arduino-robot.jpg",
+    video: "/images/robotic-arduino.mov",
     achievements: [
       "Conducted 50+ tests to optimize performance",
       "Achieved 180-degree real-time scanning field",
@@ -64,6 +66,7 @@ export const projects: Project[] = [
     startDate: "2025-02-01",
     endDate: "2025-04-30",
     duration: "3 months",
+    image: "/images/track-and-field.jpg",
     achievements: [
       "Reduced server-side bugs by 85%",
       "Implemented secure user submissions",
@@ -85,6 +88,39 @@ export const projects: Project[] = [
     ]
   },
   {
+    id: "vr-ibm",
+    title: "VR Learning Game for IBM",
+    slug: "vr-learning-game",
+    description:
+      "Led a 5-person IBM SkillsBuild team to craft an immersive VR education experience that adapts to each learner.",
+    fullDescription:
+      "As the orchestration lead of an IBM Group Project, I aligned designers, AI specialists, and gameplay engineers to deliver a VR experience that evolves with the player. We integrated IBM Granite AI APIs to provide real-time adaptive feedback, conditional reasoning, and personalized objectives across four SkillsBuild AI modules. The result is a guided, motivating path through interactive quizzes and restorative training missions.",
+    technologies: ["Unity", "C#", "IBM Granite AI", "SkillsBuild APIs", "Azure Functions"],
+    category: "web",
+    startDate: "2025-09-01",
+    endDate: "2025-12-31",
+    duration: "Ongoing",
+    image: "/images/photography-2.jpg",
+    achievements: [
+      "Coordinated 5 cross-functional contributors",
+      "Integrated 4 IBM SkillsBuild AI modules",
+      "Delivered adaptive learning journeys",
+      "Implemented conditional reasoning feedback",
+    ],
+    features: [
+      "Immersive VR classrooms",
+      "Adaptive AI tutor using Granite",
+      "Personalized quizzes and missions",
+      "Team-based narrative progression",
+      "Analytics on skill acquisition",
+    ],
+    highlights: [
+      { title: "Team Members", value: "5" },
+      { title: "AI Modules", value: "4" },
+      { title: "Status", value: "In Progress" },
+    ],
+  },
+  {
     id: "discrete-math",
     title: "Discrete Math Research Project",
     slug: "discrete-math-research",
@@ -95,6 +131,7 @@ export const projects: Project[] = [
     startDate: "2025-03-01",
     endDate: "2025-05-31",
     duration: "3 months",
+    image: "/images/IMG_7703.jpg",
     achievements: [
       "Proved key theorems",
       "Derived new formulas",
@@ -125,6 +162,7 @@ export const projects: Project[] = [
     startDate: "2024-11-01",
     endDate: "2024-12-31",
     duration: "2 months",
+    image: "/images/high-school-logo.png",
     achievements: [
       "Used only 27/100 memory mailboxes",
       "Faster program performance",

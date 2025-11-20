@@ -31,10 +31,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
+  // Always provide the context, even during SSR
+  // Use default "light" theme during SSR, will update on client mount
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

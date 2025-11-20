@@ -1,196 +1,354 @@
-"use client";
-
-import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { projects, type Project } from "@/lib/projects";
-import { Robot, Code, BookOpen, Cpu, ExternalLink, Calendar, Users } from "lucide-react";
+import { Bot, Code, BookOpen, Cpu, ExternalLink, Calendar, Clock, Camera } from "lucide-react";
 import { formatDateRange } from "@/lib/utils";
 
-const categories: Project["category"][] = ["web", "robotics", "research", "low-level"];
+const categoryOrder: Project["category"][] = ["web", "robotics", "research", "low-level"];
+
+const categoryMeta: Record<
+  Project["category"],
+  { title: string; description: string }
+> = {
+  web: {
+    title: "Web Experiences",
+    description:
+      "Full-stack interfaces engineered for reliability, responsive design, and seamless data flow.",
+  },
+  robotics: {
+    title: "Robotics & Automation",
+    description:
+      "Physical systems that sense, learn, and react to their environments with precision.",
+  },
+  research: {
+    title: "Research & Theory",
+    description: "Academic rigor meeting real-world curiosity—mathematical proofs and analytical breakthroughs.",
+  },
+  "low-level": {
+    title: "Low-Level Systems",
+    description: "Machine-level thinking focused on memory efficiency, algorithms, and resilience.",
+  },
+};
 
 const categoryIcons = {
-  robotics: Robot,
+  robotics: Bot,
   web: Code,
   research: BookOpen,
   "low-level": Cpu,
 };
 
-const categoryLabels = {
-  web: "Web Development",
-  robotics: "Robotics",
-  research: "Research",
-  "low-level": "Low-Level Programming",
+const fallbackImage = "/images/photography.jpg";
+
+const projectMediaFallback = {
+  alt: "Project artwork",
+  caption: "Meticulous case study crafted with static rendering.",
+  overlay: "bg-white/5",
+};
+
+const projectMedia = (project: Project) => ({
+  image: project.image ?? fallbackImage,
+  alt: `${project.title} showcase`,
+  caption: project.description,
+  overlay: projectMediaFallback.overlay,
+});
+
+const photographyGallery = [
+  {
+    src: "/images/photography.jpg",
+    alt: "Long-exposure night trail",
+    note: "Long-exposure studies inspired the glowing gradients you see across this portfolio.",
+  },
+  {
+    src: "/images/photography-2.jpg",
+    alt: "Architectural composition",
+    note: "Architectural frames taught me to layer hierarchy, depth, and breathing room in UI layouts.",
+  },
+  {
+    src: "/images/photography-3.jpg",
+    alt: "On-track reportage",
+    note: "Documenting teammates mid-race keeps my storytelling grounded in authentic human momentum.",
+  },
+];
+
+const heroMedia = {
+  video: "/images/robotic-project.mov",
+  poster: "/images/profile-portrait.jpg",
+  portrait: "/images/profile-portrait.jpg",
+  leadership: "/images/track-and-field-2.jpg",
+};
+
+const volunteeringHighlight = {
+  title: "Artificial Heart R&D Volunteer",
+  period: "Oct 2025 – Present",
+  summary:
+    "Selected as one of 40 student engineers collaborating with clinicians and hardware specialists on Total Artificial Heart concepts ahead of the Vienna Finals hackathon.",
+  bullets: [
+    "Support CAD modelling, prototyping, and failure-mode analysis for ventricular pumping systems.",
+    "Coordinate test protocols and documentation so surgeons can validate safety thresholds.",
+    "Champion inclusive communication between biomedical researchers, software analysts, and patient advocates.",
+  ],
+  image: "/images/track-and-field-2.jpg",
 };
 
 export default function ProjectsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<Project["category"] | "all">("all");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredProjects = projects.filter((project) => {
-    const matchesCategory = selectedCategory === "all" || project.category === selectedCategory;
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesCategory && matchesSearch;
-  });
+  const grouped = categoryOrder.map((category) => ({
+    category,
+    projects: projects.filter((project) => project.category === category),
+  }));
 
   return (
-    <div className="pt-24 pb-20 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">
-            My Projects
-          </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Explore my work across web development, robotics, research, and low-level programming.
-            Each project represents a unique challenge and learning experience.
-          </p>
-        </motion.div>
-
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-primary-600 text-white"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                }`}
-              >
-                All
-              </button>
-              {categories.map((category) => {
-                const Icon = categoryIcons[category];
-                return (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                      selectedCategory === category
-                        ? "bg-primary-600 text-white"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {categoryLabels[category]}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Search */}
-            <input
-              type="text"
-              placeholder="Search projects..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 w-full md:w-64"
-            />
-          </div>
-        </motion.div>
-
-        {/* Projects Grid */}
-        {filteredProjects.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, index) => {
-              const Icon = categoryIcons[project.category];
-              return (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="group"
-                >
-                  <Link href={`/projects/${project.slug}`}>
-                    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 h-full border border-slate-200 dark:border-slate-700 hover:border-primary-500 dark:hover:border-primary-500 card-hover flex flex-col">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                          <Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                        </div>
-                        <span className="text-xs font-medium px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-full text-slate-600 dark:text-slate-400">
-                          {categoryLabels[project.category]}
-                        </span>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                        {project.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 flex-grow line-clamp-3">
-                        {project.description}
-                      </p>
-
-                      {/* Meta Info */}
-                      <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-500 mb-4">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {formatDateRange(project.startDate, project.endDate)}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          {project.duration}
-                        </div>
-                      </div>
-
-                      {/* Technologies */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies.slice(0, 4).map((tech) => (
-                          <span
-                            key={tech}
-                            className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-400"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {project.technologies.length > 4 && (
-                          <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-400">
-                            +{project.technologies.length - 4}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* CTA */}
-                      <div className="flex items-center text-primary-600 dark:text-primary-400 text-sm font-medium mt-auto">
-                        View Details
-                        <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
+    <div className="pt-24 pb-24 min-h-screen bg-slate-950 text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+        {/* Hero with immersive video backdrop */}
+        <section className="relative overflow-hidden rounded-3xl border border-white/10 shadow-[0_20px_120px_rgba(15,23,42,0.6)]">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={heroMedia.poster}
+            className="absolute inset-0 h-full w-full object-cover brightness-50 blur-sm"
           >
-            <p className="text-slate-600 dark:text-slate-400 text-lg">
-              No projects found matching your criteria.
-            </p>
-          </motion.div>
-        )}
+            <source src={heroMedia.video} type="video/quicktime" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-950/80 to-slate-900/50" />
+          <div className="relative z-10 grid gap-10 px-8 py-12 lg:grid-cols-3 lg:gap-12">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 text-xs tracking-[0.3em] uppercase">
+                Renan Lavirotte
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold font-display leading-tight">
+                Creating responsive worlds where software, sensors, and people collaborate.
+              </h1>
+              <p className="text-base md:text-lg text-slate-200">
+                This portfolio is rendered entirely on the server to keep performances deterministic while still
+                embracing cinematic design. Immersive visuals and narrated case studies reveal how robotics, web apps,
+                and mathematical research intertwine throughout my work.
+              </p>
+              <div className="flex flex-wrap gap-4 text-sm text-slate-300">
+                <div className="flex items-center gap-2">
+                  <span className="block w-2 h-2 rounded-full bg-cyan-400" />
+                  Robotics & automation
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="block w-2 h-2 rounded-full bg-emerald-400" />
+                  Full-stack experiences
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="block w-2 h-2 rounded-full bg-indigo-400" />
+                  Rigorous research
+                </div>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="relative rounded-2xl overflow-hidden border border-white/10">
+                <Image
+                  src={heroMedia.portrait}
+                  alt="Portrait of Renan Lavirotte"
+                  width={480}
+                  height={640}
+                  className="h-full w-full object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-sm text-slate-100">
+                  “Collaborative leadership is my favourite debugging tool—whether coordinating athletes or engineers.”
+                </div>
+              </div>
+              <div className="relative rounded-2xl overflow-hidden border border-white/10">
+                <Image
+                  src={heroMedia.leadership}
+                  alt="Track & Field executive moment"
+                  width={480}
+                  height={320}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]" />
+                <div className="relative px-4 py-3 text-sm">
+                  Leading Durham’s Track & Field squad (20 athletes) taught me to choreograph data, people, and time.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Navigation */}
+        <nav className="flex flex-wrap justify-center gap-3 text-sm text-slate-200">
+          {categoryOrder.map((category) => (
+            <a
+              key={category}
+              href={`#${category}`}
+              className="px-4 py-2 rounded-full border border-white/10 hover:border-white/40 transition"
+            >
+              {categoryMeta[category].title}
+            </a>
+          ))}
+        </nav>
+
+        {/* Project clusters */}
+        <div className="space-y-20">
+          {grouped.map(({ category, projects }) => {
+            const Icon = categoryIcons[category];
+            const meta = categoryMeta[category];
+
+            return (
+              <section key={category} id={category} className="scroll-mt-24 space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-2xl bg-white/5">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Chapter</p>
+                    <h2 className="text-3xl font-bold font-display">{meta.title}</h2>
+                    <p className="text-slate-300 text-sm md:text-base">{meta.description}</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {projects.map((project) => {
+                    const media = projectMedia(project);
+
+                    return (
+                      <article
+                        key={project.id}
+                        className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+                      >
+                        <div className="relative h-64 w-full overflow-hidden">
+                          {project.video ? (
+                            <video
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              poster={project.image}
+                              className="absolute inset-0 h-full w-full object-cover brightness-75 blur-[1px]"
+                            >
+                              <source src={project.video} type="video/quicktime" />
+                            </video>
+                          ) : (
+                            <Image
+                              src={media.image}
+                              alt={media.alt}
+                              width={720}
+                              height={400}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
+                          <div className="absolute bottom-4 left-4 right-4 text-sm text-slate-200">
+                            {media.caption}
+                          </div>
+                        </div>
+
+                        <div className="p-6 space-y-4">
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+                                {formatDateRange(project.startDate, project.endDate)}
+                              </p>
+                              <h3 className="text-2xl font-semibold text-white mt-2">{project.title}</h3>
+                            </div>
+                            <span className="text-xs font-medium px-3 py-1 rounded-full bg-white/10 text-slate-200">
+                              {project.duration}
+                            </span>
+                          </div>
+
+                          <p className="text-sm text-slate-300">{project.description}</p>
+
+                          <div className="flex flex-wrap gap-2 text-xs text-slate-400">
+                            {project.technologies.map((tech) => (
+                              <span key={tech} className="px-3 py-1 rounded-full border border-white/10">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2 text-center text-xs text-slate-400">
+                            {project.highlights.map((item) => (
+                              <div key={item.title} className="rounded-2xl border border-white/5 px-2 py-2">
+                                <div className="text-base font-semibold text-slate-100">{item.value}</div>
+                                <div className="text-[0.65rem] uppercase tracking-wide">{item.title}</div>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center justify-between text-sm font-medium text-cyan-200">
+                            <Link href={`/projects/${project.slug}`} className="inline-flex items-center gap-2">
+                              Deep Dive
+                              <ExternalLink className="w-4 h-4" />
+                            </Link>
+                            <span className="text-slate-400">{project.achievements.length}+ highlights</span>
+                          </div>
+                        </div>
+
+                        <div className={`absolute inset-0 pointer-events-none ${projectMediaFallback.overlay}`} />
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+        </div>
+
+        {/* Volunteering */}
+        <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-rose-500/10 via-slate-950 to-rose-900/10 p-8 space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.3em] text-rose-200">Volunteering Impact</p>
+              <h2 className="text-3xl font-display font-semibold text-white">{volunteeringHighlight.title}</h2>
+              <p className="text-sm text-rose-100">{volunteeringHighlight.period}</p>
+              <p className="text-slate-100">{volunteeringHighlight.summary}</p>
+              <ul className="space-y-2 text-sm text-rose-100">
+                {volunteeringHighlight.bullets.map((bullet) => (
+                  <li key={bullet} className="flex gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-rose-300" />
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative rounded-2xl overflow-hidden border border-white/10">
+              <Image
+                src={volunteeringHighlight.image}
+                alt="Artificial heart R&D team"
+                width={720}
+                height={480}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 text-sm text-slate-100">
+                Engineering empathy into lifesaving hardware is my north star for every line of code.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Photography & hobbies */}
+        <section className="rounded-3xl border border-white/10 bg-white/5 p-8 space-y-6">
+          <div className="flex items-center gap-4">
+            <Camera className="w-8 h-8 text-white" />
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Passion Capsule</p>
+              <h2 className="text-3xl font-display font-semibold text-white">Photography & Storytelling</h2>
+            </div>
+          </div>
+          <p className="text-slate-200 max-w-4xl">
+            Beyond code, I document motion, architecture, and community. The discipline of composing intentional frames
+            directly influences how I structure layouts, gradients, and atmospheric lighting in my interfaces.
+          </p>
+          <div className="grid md:grid-cols-3 gap-4">
+            {photographyGallery.map((photo) => (
+              <figure
+                key={photo.src}
+                className="relative overflow-hidden rounded-2xl border border-white/5 bg-slate-900"
+              >
+                <Image src={photo.src} alt={photo.alt} width={480} height={320} className="h-60 w-full object-cover" />
+                <figcaption className="p-4 text-sm text-slate-200">{photo.note}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );

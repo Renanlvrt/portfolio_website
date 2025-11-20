@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GraduationCap, Award, Users, Trophy, Code, Palette, Languages, MapPin } from "lucide-react";
+import { GraduationCap, Award, User, Trophy, Code, Palette, Languages, MapPin } from "lucide-react";
 
 const education = [
   {
@@ -43,7 +43,7 @@ const positions = [
       "Coordinated yearly hackathon with over 200 participants",
       "Enhanced team collaboration and student involvement",
     ],
-    icon: Users,
+    icon: User,
   },
 ];
 
@@ -176,7 +176,7 @@ export default function AboutPage() {
           className="mb-12"
         >
           <h2 className="text-3xl font-bold font-display mb-6 flex items-center gap-3">
-            <Users className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+            <User className="w-8 h-8 text-primary-600 dark:text-primary-400" />
             Leadership & Experience
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
