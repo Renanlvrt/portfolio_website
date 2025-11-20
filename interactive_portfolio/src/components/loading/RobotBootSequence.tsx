@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ProceduralRobot } from "@/components/robot/ProceduralRobot";
+import { AutonomousDroid } from "@/components/robot/AutonomousDroid";
 import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 
@@ -98,10 +98,9 @@ export function RobotBootSequence({ onComplete }: RobotBootSequenceProps) {
             <pointLight position={[-5, 3, -5]} intensity={0.8} color="#00D9FF" />
             <spotLight position={[0, 5, 0]} intensity={2} angle={0.5} penumbra={1} color="#00D9FF" />
             
-            <ProceduralRobot 
-              zone="hub" 
-              isActive={true}
-              bootState={robotState}
+            <AutonomousDroid 
+              waypoints={[]}
+              speed={0}
             />
           </Canvas>
         </div>

@@ -7,6 +7,7 @@ import { ArrowLeft, ExternalLink, Github, Calendar, Clock, CheckCircle2, Zap } f
 import { motion } from "framer-motion";
 import { portalNodes } from "@/data/portals";
 import { projectDetails } from "@/data/projects";
+import { ImageGallery } from "@/components/content/ImageGallery";
 
 type MissionPageProps = {
   params: Promise<{ id: string }>;
@@ -96,8 +97,21 @@ export default function MissionPage({ params }: MissionPageProps) {
             ))}
           </div>
 
-          {/* Project Images Gallery */}
+          {/* Project Images Gallery - Creative Layout */}
           {project && project.images.length > 0 && (
+            <motion.div
+              className="mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <h2 className="mb-6 text-2xl font-semibold text-white">Project Gallery</h2>
+              <ImageGallery images={project.images} title={project.title} />
+            </motion.div>
+          )}
+
+          {/* Legacy Gallery (if needed) */}
+          {project && project.images.length > 0 && false && (
             <motion.section
               className="mb-12"
               initial={{ opacity: 0, y: 20 }}
