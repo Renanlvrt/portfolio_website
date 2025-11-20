@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ProceduralRobot } from "@/components/robot/ProceduralRobot";
 import { Canvas } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
 
 type RobotBootSequenceProps = {
   onComplete: () => void;
@@ -19,28 +20,43 @@ const bootMessages = [
 ];
 
 /**
- * UNIQUE FEATURE: Terminal-Style Boot Sequence with 3D Robot
+ * ROBOT-FIRST LOADING SCREEN
  * 
- * Combines retro terminal aesthetic with modern 3D robot visualization.
- * The robot "awakens" as the system boots, creating a cinematic experience.
+ * The robot appears IMMEDIATELY - first thing user sees.
+ * Robot goes through awakening sequence:
+ * 1. Wireframe (0-30%)
+ * 2. Materialization (30-60%)
+ * 3. Full model (60-90%)
+ * 4. Power on (90-100%)
  */
 export function RobotBootSequence({ onComplete }: RobotBootSequenceProps) {
   const [progress, setProgress] = useState(0);
   const [currentMessage, setCurrentMessage] = useState(0);
-  const [showRobot, setShowRobot] = useState(false);
+  const [robotState, setRobotState] = useState<"wireframe" | "materializing" | "solid" | "powered">("wireframe");
 
   useEffect(() => {
     // Progress simulation
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        const newProgress = prev + 2;
+        
+        // Update robot state based on progress
+        if (newProgress >= 90 && robotState !== "powered") {
+          setRobotState("powered");
+        } else if (newProgress >= 60 && robotState !== "solid" && robotState !== "powered") {
+          setRobotState("solid");
+        } else if (newProgress >= 30 && robotState === "wireframe") {
+          setRobotState("materializing");
+        }
+
+        if (newProgress >= 100) {
           clearInterval(progressInterval);
           setTimeout(() => {
             onComplete();
           }, 1000);
           return 100;
         }
-        return prev + 2;
+        return newProgress;
       });
     }, 50);
 
@@ -54,14 +70,11 @@ export function RobotBootSequence({ onComplete }: RobotBootSequenceProps) {
       });
     }, 600);
 
-    // Show robot after first message
-    setTimeout(() => setShowRobot(true), 800);
-
     return () => {
       clearInterval(progressInterval);
       clearInterval(messageInterval);
     };
-  }, [onComplete]);
+  }, [onComplete, robotState]);
 
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black">
@@ -76,29 +89,25 @@ export function RobotBootSequence({ onComplete }: RobotBootSequenceProps) {
       </div>
 
       <div className="relative z-10 flex flex-col items-center gap-8">
-        {/* 3D Robot */}
-        <div className="h-64 w-64">
-          <AnimatePresence>
-            {showRobot && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-              >
-                <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-                  <ambientLight intensity={0.5} />
-                  <pointLight position={[5, 5, 5]} intensity={1} color="#00D9FF" />
-                  <pointLight position={[-5, -5, -5]} intensity={0.5} color="#00D9FF" />
-                  <ProceduralRobot zone="hub" isActive={true} />
-                </Canvas>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        {/* 3D Robot - LARGE and CENTER */}
+        <div className="h-[400px] w-[400px] md:h-[500px] md:w-[500px]">
+          <Canvas camera={{ position: [0, 0.5, 4], fov: 50 }}>
+            <PerspectiveCamera makeDefault position={[0, 0.5, 4]} />
+            <ambientLight intensity={0.3} />
+            <pointLight position={[5, 5, 5]} intensity={1.5} color="#00D9FF" />
+            <pointLight position={[-5, 3, -5]} intensity={0.8} color="#00D9FF" />
+            <spotLight position={[0, 5, 0]} intensity={2} angle={0.5} penumbra={1} color="#00D9FF" />
+            
+            <ProceduralRobot 
+              zone="hub" 
+              isActive={true}
+              bootState={robotState}
+            />
+          </Canvas>
         </div>
 
-        {/* Terminal Text */}
-        <div className="font-mono text-green-400 text-sm space-y-2">
+        {/* Terminal Text - Below Robot */}
+        <div className="font-mono text-green-400 text-sm space-y-2 text-center">
           {bootMessages.slice(0, currentMessage + 1).map((msg, idx) => (
             <motion.div
               key={idx}
@@ -153,4 +162,3 @@ export function RobotBootSequence({ onComplete }: RobotBootSequenceProps) {
     </div>
   );
 }
-

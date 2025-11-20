@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { RoboticHero } from "@/components/hero/RoboticHero";
-import { AutonomyHub } from "@/components/hub/AutonomyHub";
+import { RobotCenteredHub } from "@/components/hub/RobotCenteredHub";
 import { MissionDeck } from "@/components/missions/MissionDeck";
 import { RobotBootSequence } from "@/components/loading/RobotBootSequence";
 import { CustomCursor } from "@/components/ui/CustomCursor";
@@ -35,7 +35,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl flex-col gap-12 px-4 py-16 sm:px-6 lg:px-0">
           <RoboticHero />
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-            <AutonomyHub nodes={portalNodes} />
+            <RobotCenteredHub nodes={portalNodes} />
             <TelemetryPanel />
         </div>
           <MissionDeck missions={missionDeck} />

@@ -7,6 +7,7 @@ import * as THREE from "three";
 type ProceduralRobotProps = {
   zone?: string;
   isActive?: boolean;
+  bootState?: "wireframe" | "materializing" | "solid" | "powered";
 };
 
 /**
@@ -21,7 +22,11 @@ type ProceduralRobotProps = {
  * This creates a truly unique, never-seen-before experience where the robot
  * evolves as you explore the portfolio.
  */
-export function ProceduralRobot({ zone = "hub", isActive = true }: ProceduralRobotProps) {
+export function ProceduralRobot({ 
+  zone = "hub", 
+  isActive = true,
+  bootState = "solid"
+}: ProceduralRobotProps) {
   const groupRef = useRef<THREE.Group>(null);
   const headRef = useRef<THREE.Group>(null);
   const leftArmRef = useRef<THREE.Group>(null);
@@ -106,6 +111,23 @@ export function ProceduralRobot({ zone = "hub", isActive = true }: ProceduralRob
     }
   });
 
+  // Boot state material
+  const getMaterial = () => {
+    if (bootState === "wireframe") {
+      return {
+        wireframe: true,
+        color: "#00D9FF",
+        transparent: true,
+        opacity: 0.8,
+      };
+    }
+    return {
+      wireframe: false,
+    };
+  };
+
+  const materialProps = getMaterial();
+
   return (
     <group ref={groupRef} scale={robotConfig.scale}>
       {/* Base/Wheels */}
@@ -113,9 +135,10 @@ export function ProceduralRobot({ zone = "hub", isActive = true }: ProceduralRob
         <mesh position={[0, -0.8, 0]}>
           <cylinderGeometry args={[0.6, 0.6, 0.3, 32]} />
           <meshStandardMaterial
-            color="#1a1a1a"
-            metalness={0.8}
-            roughness={0.2}
+            {...materialProps}
+            color={bootState === "wireframe" ? "#00D9FF" : "#1a1a1a"}
+            metalness={bootState === "wireframe" ? 0 : 0.8}
+            roughness={bootState === "wireframe" ? 1 : 0.2}
             emissive={robotConfig.color}
             emissiveIntensity={robotConfig.glowIntensity * 0.3}
           />
